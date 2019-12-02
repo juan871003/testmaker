@@ -1,0 +1,21 @@
+type Test @model {
+  id: ID!
+  title: String!
+  questions: [Question] @connection(name: "TestQuestions")
+}
+type Question @model {
+  id: ID!
+  text: String!
+  topic: String
+  infoIfCorrect: String
+  options: [Option] @connection(name: "QuestionOptions")
+  test: Test @connection(name: "TestQuestions")
+  questionTestId: String
+}
+type Option @model {
+  id: ID!
+  text: String!
+  isCorrect: Boolean!
+  question: Question @connection(name: "QuestionOptions")
+  optionQuestionId: String
+}
