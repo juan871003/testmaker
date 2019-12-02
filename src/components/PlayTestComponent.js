@@ -27,7 +27,7 @@ function PlayTest(props) {
         
   if(props.test === null) { return null; }
 
-  const topics = [...new Set(props.test.questions.map(q => q.topic))];
+  const topics = [...new Set(['', ...props.test.questions.map(q => q.topic)])];
 
   function setOptionHandle(optionId, isMultiAnswer) {
     const questions = [...sQuestions];
@@ -75,9 +75,8 @@ function PlayTest(props) {
                   as='select'
                   value={selectedTopic}
                   onChange={(e) => setSelectedTopic(e.target.value)}>
-                  <option key='no_topic'></option>
                   {
-                    topics.map(t => <option key={t}>{t}</option>)
+                    topics.map(t => <option key={t === '' ? 'no_topic' : t}>{t}</option>)
                   }
                 </Form.Control>
               </Form.Group>

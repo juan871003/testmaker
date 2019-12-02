@@ -14,14 +14,17 @@ function EditTest(props) {
   const [isExpand, setIsExpand] = useState(false);
   if(props.test === null) { return null; }
   const { id, title, questions } = props.test;
-  const topics = [...new Set(questions.map(q => q.topic))];
+  const topics = [...new Set(['', ...questions.map(q => q.topic)])];
 
   function changeTitle(event) {
     props.editTest(id, 'title', event.target.value);
   }
 
   function addQuestion() {
-    const emptyQuestion = newQuestion(getMinId(questions), { modification: 'new' });
+    const emptyQuestion = newQuestion(getMinId(questions), { 
+      modification: 'new',
+      topic: selectedTopic
+    });
     props.editTest(id, 'questions', [emptyQuestion, ...questions]);
   }
 
@@ -77,9 +80,8 @@ function EditTest(props) {
                     as='select'
                     value={selectedTopic}
                     onChange={(e) => setSelectedTopic(e.target.value)}>
-                    <option key='no_topic'></option>
                     {
-                      topics.map(t => <option key={t}>{t}</option>)
+                      topics.map(t => <option key={t === '' ? 'no_topic' : t}>{t}</option>)
                     }
                   </Form.Control>
                 </Form.Group>
