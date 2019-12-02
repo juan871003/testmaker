@@ -69,7 +69,7 @@ function EditTest(props) {
           <Card.Text as='div'>
             <p>{questions.length} Questions</p>
             {
-              topics.length > 0 &&
+              topics.length > 1 &&
               <Form>
                 <Form.Group controlId='formTestTopicsFilter'>
                   <Form.Label>Filter by topic</Form.Label>

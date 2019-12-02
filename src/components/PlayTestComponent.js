@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
+import Form from 'react-bootstrap/Form';
 
 import PlayQuestion from './PlayQuestionComponent';
 import { shuffleQuestions, shuffleOptions } from '../global/common';
@@ -10,16 +11,23 @@ import { shuffleQuestions, shuffleOptions } from '../global/common';
 function PlayTest(props) {
   // [s]huffled[q]uestions
   const [sQuestions, setSQuestions] = useState([]);
-  // const [wQuestions, setWQuestions] = useState([]);
   const [index, setIndex] = useState(0);
+  const [selectedTopic, setSelectedTopic] = useState('');
   
   useEffect(() => {
     if(props.test !== null) {
-      setSQuestions(shuffleQuestionsLocal(props.test.questions));
+      setIndex(0);
+      setSQuestions(
+        shuffleQuestionsLocal(
+          props.test.questions.filter(
+            q => selectedTopic === '' || q.topic === selectedTopic))
+      );
     }
-  }, [props.test]);
-
+  }, [props.test, selectedTopic]);
+        
   if(props.test === null) { return null; }
+
+  const topics = [...new Set(props.test.questions.map(q => q.topic))];
 
   function setOptionHandle(optionId, isMultiAnswer) {
     const questions = [...sQuestions];
@@ -51,10 +59,31 @@ function PlayTest(props) {
     setSQuestions(questions);
   }
 
+  console.log(props.test.questions.map(q => q.topic))
+
   return (
     <div>
        <Badge variant='secondary'>{sQuestions.length - index} questions left</Badge>
       <Card>
+        {
+          topics.length > 1 &&
+          <Card.Header>
+            <Form>
+              <Form.Group controlId='formTestPlayTopicsFilter'>
+                <Form.Label>Filter by topic</Form.Label>
+                <Form.Control 
+                  as='select'
+                  value={selectedTopic}
+                  onChange={(e) => setSelectedTopic(e.target.value)}>
+                  <option key='no_topic'></option>
+                  {
+                    topics.map(t => <option key={t}>{t}</option>)
+                  }
+                </Form.Control>
+              </Form.Group>
+            </Form>
+          </Card.Header>
+        }
         <Card.Body>
           {
             index < sQuestions.length &&
