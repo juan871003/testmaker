@@ -59,8 +59,6 @@ function PlayTest(props) {
     setSQuestions(questions);
   }
 
-  console.log(props.test.questions.map(q => q.topic))
-
   return (
     <div>
        <Badge variant='secondary'>{sQuestions.length - index} questions left</Badge>

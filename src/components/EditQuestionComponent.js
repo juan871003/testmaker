@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Alert from 'react-bootstrap/Alert';
 
 function EditQuestion(props) {
   // const question = props.question;
@@ -20,6 +21,16 @@ function EditQuestion(props) {
 
   const [tempTopic, setTempTopic] = useState('');
   const [mode, setMode] = useState(modes.view);
+
+  if(question === undefined || 
+    topics === undefined || 
+    isExpand === undefined) {
+      return null;
+  }
+
+  if(question.text === '' && mode === modes.view) { 
+    setMode(modes.edit);
+  }
 
   function changeText(event) {
     props.editQuestion(question.id, 'text', event.target.value);
@@ -115,8 +126,12 @@ function EditQuestion(props) {
             }
           </Form.Group>
           <Form.Group controlId={`formQuestionOptions_${question.id}`}>
-            <Form.Label>Options</Form.Label>
-            {editOptionsJsx}
+            <Form.Label>Options:</Form.Label>
+            {
+              question.options.length > 0 ?
+                editOptionsJsx :
+                <Alert variant='info'>No options added yet</Alert>
+            }
           </Form.Group>
           <Form.Group controlId={`formQuestionInfoIfCorrect_${question.id}`}>
             <Form.Label>Message if question is answered correctly:</Form.Label>
