@@ -3,8 +3,12 @@ import { listTests, listQuestions, listOptions } from '../graphql/queries';
 import { newTest, newQuestion, newOption, isNewId } from './common';
 import { createTest, createQuestion, createOption, deleteTest, deleteOption, deleteQuestion, updateQuestion } from '../graphql/mutations';
 import { updateTest, updateOption } from "../graphql/mutations";
+import getJsonTests from "./mock/mocker";
 
-export const getAllTests = async () => {
+export const getAllTests = async (currentUrl) => {
+  if(currentUrl.indexOf('http://localhost') > -1) {
+    return getJsonTests();
+  }
   const testsData = await getAllListData('listTests');
   const questionsData = await getAllListData('listQuestions');
   const optionsData = await getAllListData('listOptions');

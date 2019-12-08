@@ -1,4 +1,4 @@
-export const data = {
+const data = {
   "questionnaires": [
     {
       "id": 1,
@@ -757,3 +757,5 @@ export const data = {
     }
   ]
 }
+
+export default data;

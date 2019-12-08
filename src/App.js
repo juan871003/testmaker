@@ -10,13 +10,12 @@ import Card from 'react-bootstrap/Card';
 // import { onCreateTest } from './graphql/subscriptions';
 import EditTest from './components/EditTestComponent';
 import PlayTest from './components/PlayTestComponent';
-import { getMinId, newTest, isNewId, newQuestion, newOption } from './global/common';
+import { getMinId, newTest, isNewId } from './global/common';
 import { getAllTests, saveTestsChanges, removeTest } from './global/crudTest';
-import { data as rawdata } from './data';
+// import { data as rawdata } from './global/mock/data';
 
 const modes = {
   LISTTESTS: 'listtests',
-  // ADDTEST: 'addtest',
   EDITTEST: 'edittest',
   PLAYTEST: 'playtest'
 }
@@ -77,8 +76,7 @@ function App() {
 
   async function getTests() {
     setProcessMsg('Loading tests...');
-    const result = await getAllTests();
-    // const result = getJsonTests();
+    const result = await getAllTests(document.URL);
     if(result !== null) {
       setTests(result);
       setProcessMsg('');
@@ -163,49 +161,21 @@ function App() {
     //setTests(prevTests => await saveTestsChanges(prevTests));
     const newTests = await saveTestsChanges(tests);
     setTests(newTests);
+    if(selectedTest !== null) {
+      setSelectedTest(prevTest => {
+        const nextTest = newTests.find(t => t.id === prevTest.id);
+        if(nextTest !== undefined) {
+          return nextTest;
+        }
+        return null;
+      });
+    }
     setProcessMsg('Changes Saved');
   }
 
   function goHome() {
     setMode(modes.LISTTESTS);
     setSelectedTest(null);
-  }
-
-  function getJsonTests() {
-    const newTests = rawdata.questionnaires.map(
-      (t, index) => newTest((index + 1) * -1, {
-          title: t.title,
-          questions: getJsonQuestions(t.questions, index),
-          modification: 'none'
-        } 
-      )
-    );
-    return newTests;
-  }
-
-  function getJsonQuestions(questions, testIndex) {
-    return questions.map(
-      (q, index) => newQuestion( (((testIndex + 1) * 10) + (index + 1)) * -1, {
-        topic: q.topic || '',
-        text: q.question,
-        infoIfCorrect: q.infoIfCorrect || '',
-        options: getJsonOptions(q.options, testIndex, index),
-        modification: 'none'
-      })
-    );
-  }
-
-  function getJsonOptions(options, testIndex, questionIndex) {
-    function getId(index) {
-      return (((testIndex + 1) * 100) + ((questionIndex + 1) * 10) + (index + 1)) * -1;
-    }
-    return options.map(
-      (o, index) => newOption(getId(index), {
-        text: o.text,
-        isCorrect: o.isCorrect,
-        modification: 'none'
-      })
-    );
   }
 
   function listTestsJsx() {

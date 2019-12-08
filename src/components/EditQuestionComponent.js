@@ -21,6 +21,7 @@ function EditQuestion(props) {
 
   const [tempTopic, setTempTopic] = useState('');
   const [mode, setMode] = useState(modes.view);
+  const [isLocalExpand, setIsLocalExpand] = useState(false);
 
   if(question === undefined || 
     topics === undefined || 
@@ -156,13 +157,17 @@ function EditQuestion(props) {
         <Card.Subtitle>{question.topic}</Card.Subtitle>
         <Card.Title className='mt-1'>{question.text}</Card.Title>
         <Button variant='outline-primary' className='float-right' onClick={() => setMode(modes.edit)}>Edit</Button>
+        {
+          !isExpand &&
+          <Button variant='outline-info' className='float-right mr-2' onClick={() => setIsLocalExpand(prevVal => !prevVal)}>{isLocalExpand ? 'Collapse' : 'Expand'}</Button>
+        }
       </Card.Header>
       {
-        isExpand &&
+        (isExpand || isLocalExpand) &&
         <Card.Body>
           <ListGroup>
             {
-              question.options.map(o => <ListGroup.Item variant={o.isCorrect ? 'success' : 'danger'}>{o.text}</ListGroup.Item>)
+              question.options.map(o => <ListGroup.Item key={o.id} variant={o.isCorrect ? 'success' : 'danger'}>{o.text}</ListGroup.Item>)
             }
             
           </ListGroup>

@@ -107,7 +107,7 @@ function EditTest(props) {
       </Card>
       {
         questions.length > 0 &&
-        <Button variant='outline-info' onClick={() => setIsExpand(prevIsExpand => !prevIsExpand)}>{isExpand ? 'Collapse' : 'Expand'}</Button>
+        <Button variant='outline-info' onClick={() => setIsExpand(prevIsExpand => !prevIsExpand)}>{isExpand ? 'Collapse' : 'Expand'} All</Button>
       }
       { questionsJsx }
     </div>
