@@ -8,6 +8,79 @@ export const isNewId = id => {
   return !isNaN(id) && id < 0;
 }
 
+/*
+
+export function Test(id, { 
+  title = '', 
+  questions = [], 
+  modification = 'none'
+} = {}) {
+  this.id = id;
+  this.title = title;
+  this.questions = questions;
+  this.modification = modification;
+  // when adding new properties, remember to add them in the clone function too
+}
+
+Test.prototype.clone = function() {
+  return new Test(this.id, {
+    title: this.title,
+    questions: this.questions.map(q => q.clone()),
+    modification: this.modification
+  });
+}
+
+export function Question(id, {
+  topic = '',
+  text = '',
+  infoIfCorrect = '',
+  options = [],
+  isAnswered = false,
+  modification = 'none'
+} = {}) {
+  this.topic = topic;
+  this.text = text;
+  this.infoIfCorrect = infoIfCorrect;
+  this.options = options;
+  this.isAnswered = isAnswered;
+  this.modification = modification;
+  // when adding new properties, remember to add them in the clone function too
+}
+
+Question.prototype.clone = function() {
+  return new Question(this.id, {
+    topic: this.topic,
+    text: this.text,
+    infoIfCorrect: this.infoIfCorrect,
+    options: this.options.map(o => o.clone()),
+    isAnswered: this.isAnswered,
+    modification: this.modification,
+  });
+}
+
+export function Option(id, {
+  text = '',
+  isCorrect = false,
+  isSelected = false,
+  modification = 'none'
+} = {}) {
+  this.text = text;
+  this.isCorrect = isCorrect;
+  this.isSelected = isSelected;
+  this.modification = modification;
+  // when adding new properties, remember to add them in the clone function too
+}
+
+Option.prototype.clone = function() {
+  return new Option(this.id, {
+    text: this.text,
+    isCorrect: this.isCorrect,
+    isSelected: this.isSelected,
+    modification: this.modification
+  })
+}
+*/
+
 export const newTest = (id, { 
   title = '', 
   questions = [], 
@@ -48,7 +121,7 @@ export const newOption = (id, {
   isSelected,
   modification
 });
-
+/*
 //export const optionCpy = option => Object.assign({}, option);
 
 //export const copyOptions = options => [...options];
@@ -79,20 +152,16 @@ export const testCpy = (test) => {
 export const copyTests = tests => [...tests];
 //export const copyTests = tests => tests.map(t => testCpy(t));
 */
-export const shuffleQuestions = questions => {
-  const newQuestions = shuffleArr([...questions]);
-  return newQuestions;
-}; 
-
-export const shuffleOptions = options => {
-  const newOptions = shuffleArr([...options]);
-  return newOptions;
+/*
+export function shuffleClonable(arr) {
+  return shuffleArr(arr.map(item => item.clone()));
 }
-
-function shuffleArr(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
+*/
+export function shuffleArr(arr) {
+  const arrCpy = [...arr];
+  for (let i = arrCpy.length - 1; i > 0; i--) {
     const rand = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[rand]] = [arr[rand], arr[i]];
+    [arrCpy[i], arrCpy[rand]] = [arrCpy[rand], arrCpy[i]];
   }
-  return arr;
+  return arrCpy;
 }

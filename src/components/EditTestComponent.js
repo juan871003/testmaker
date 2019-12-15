@@ -29,12 +29,13 @@ function EditTest(props) {
   }
 
   function editQuestionHandler(questionid, property, value) {
-    const index = questions.findIndex(q => q.id === questionid);
-    const nextQuestions = [...questions];
-    nextQuestions[index][property] = value;
-    if(nextQuestions[index].modification === 'none') {
-      nextQuestions[index].modification = 'modified';
-    }
+    const nextQuestions = questions.map(q => 
+      q.id === questionid ? {
+        ...q, 
+        [property]: value, 
+        modification: q.modification === 'none' ? 'modified' : q.modification
+      } : q
+    );
     props.editTest(id, 'questions', nextQuestions);
   }
 

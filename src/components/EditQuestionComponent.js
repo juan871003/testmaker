@@ -55,17 +55,17 @@ function EditQuestion(props) {
 
   function addOption() {
     const emptyOption = newOption(getMinId(question.options), { modification: 'new' });
-    const newOptions = [...question.options, emptyOption];
-    props.editQuestion(question.id, 'options', newOptions);
+    props.editQuestion(question.id, 'options', [...question.options, emptyOption]);
   }
 
   function editOptionHandler(optionId, property, value) {
-    const index = question.options.findIndex(o => o.id === optionId);
-    const nextOptions = [...question.options];
-    nextOptions[index][property] = value;
-    if (nextOptions[index].modification === 'none') {
-      nextOptions[index].modification = 'modified';
-    }
+    const nextOptions = question.options.map(o => 
+      o.id === optionId ? {
+        ...o,
+        [property]: value,
+        modification: o.modification === 'none' ? 'modified' : o.modification
+      } : o
+    );
     props.editQuestion(question.id, 'options', nextOptions);
   }
 
@@ -126,7 +126,7 @@ function EditQuestion(props) {
               </InputGroup>
             }
           </Form.Group>
-          <Form.Group controlId={`formQuestionOptions_${question.id}`}>
+          <Form.Group>
             <Form.Label>Options:</Form.Label>
             {
               question.options.length > 0 ?

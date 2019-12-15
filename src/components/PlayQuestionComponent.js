@@ -57,6 +57,7 @@ function PlayQuestion(props) {
                       checked={o.isSelected}
                       label={o.text}
                       className='xs-8'
+                      disabled={question.isAnswered}
                     />
                   </Form.Group>
                 </Col>

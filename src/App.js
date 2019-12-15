@@ -7,12 +7,10 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 
-// import { onCreateTest } from './graphql/subscriptions';
 import EditTest from './components/EditTestComponent';
 import PlayTest from './components/PlayTestComponent';
 import { getMinId, newTest, isNewId } from './global/common';
 import { getAllTests, saveTestsChanges, removeTest } from './global/crudTest';
-// import { data as rawdata } from './global/mock/data';
 
 const modes = {
   LISTTESTS: 'listtests',
@@ -30,20 +28,6 @@ function App() {
     getTests();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // update 'selectedtest' after 'tests' have been updated
-  // otherwise 'selectedtest' would be pointing to old copy of test
-  /* useEffect(() => {
-    if(selectedTest !== null) {
-      const test = tests.find(t => t.id === selectedTest.id);
-      if(test !== undefined) {
-        setSelectedTest(test);
-      } else {
-        setSelectedTest(null);
-      }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tests]); */
 
   /* useEffect(() => {
     const listeners = [];
@@ -103,30 +87,23 @@ function App() {
   }
 
   function editTestHandler(testId, property, value) {
-    setTests(prevTests => {
-      const index = prevTests.findIndex(t => t.id === testId);
-      if(index >= 0) {
-        const nextTests = [...prevTests];
-        nextTests[index][property] = value;
-        if(nextTests[index].modification === 'none') {
-          nextTests[index].modification = 'modified';
-        }
-        return nextTests; 
-      }
-      return prevTests;
-    });
+    setTests(prevTests => prevTests.map(
+      t => t.id === testId ?
+      {
+        ...t, 
+        [property]: value, 
+        modification: t.modification === 'none' ?
+          'modified' : t.modification
+      } : t
+    ));
   }
 
   function askDeleteTest(testId) {
-    setTests(prevTests => {
-      const nextTests = [...prevTests];
-      const nextTest = nextTests.find(t => t.id === testId);
-      if(nextTest !== undefined) {
-        nextTest.modification = 'askDelete';
-        return nextTests;
-      }
-      return prevTests;
-    });
+    setTests(prevTests =>
+      prevTests.map( t => 
+        t.id === testId ? 
+        {...t, modification: 'askDelete'} : t)
+    );
   }
 
   function deleteTest(test) {
@@ -137,15 +114,11 @@ function App() {
   }
 
   function undoDeleteTest(test) {
-    setTests(prevTests => {
-      const nextTests = [...prevTests];
-      const nextTest = nextTests.find(t => t.id === test.id);
-      if(nextTest !== undefined) {
-        nextTest.modification = 'modified';
-        return nextTests;
-      }
-      return prevTests;
-    });
+    setTests(prevTests => 
+      prevTests.map(
+        t => t === test.id ? 
+        {...t, modification: 'modified'} : t)
+    );
   }
 
   function checkIsDirty() {
@@ -162,13 +135,9 @@ function App() {
     const newTests = await saveTestsChanges(tests);
     setTests(newTests);
     if(selectedTest !== null) {
-      setSelectedTest(prevTest => {
-        const nextTest = newTests.find(t => t.id === prevTest.id);
-        if(nextTest !== undefined) {
-          return nextTest;
-        }
-        return null;
-      });
+      setSelectedTest(prevTest => 
+        newTests.find(t => t.id === prevTest.id) || null
+      );
     }
     setProcessMsg('Changes Saved');
   }
@@ -241,4 +210,6 @@ function App() {
   ); 
 }
 
-export default withAuthenticator(App);
+const application = document.URL.indexOf('localhost') >= 0 ? App : withAuthenticator(App);
+
+export default application;
